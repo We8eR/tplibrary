@@ -1,19 +1,36 @@
+<!-- templates/tplibrary/data.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>AddTP List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-{% csrf_token %}
 <body>
-{% for Addtp in Addtps %}
-    <tr class='success'>
-        <td>{{ Addtp.id }}</td>
-        <td>{{ Addtp.author }}</td>
-        <td>{{ Addtp.title }}</td>
-        <td>{{ Addtp.description }}</td>
-    </tr>
-{% endfor %}
+    <div class="container">
+        <h1>AddTP List</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Author</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Date and Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in addtps %}
+                    <tr>
+                        <td>{{ item.author }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.date_time }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
