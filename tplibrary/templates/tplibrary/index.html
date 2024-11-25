@@ -1,21 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Электронный архив цеха №...</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Quicksand&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
-</head>
-<body>
-    <div class="container">
-                <h2>Электронный архив цеха №...</h2>
-                <a href="{% url 'addtp' %}" class="btn">Добавить техпроцесс в базу</a>
-                <a href="{% url 'data' %}" class="btn">Просмотреть данные</a>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <h2 class="mb-4">Электронный архив цеха №...</h2>
+        {% if user.is_authenticated %}
+            <div class="d-grid gap-3 col-md-6 mx-auto">
+                <a href="{% url 'addtp' %}" class="btn btn-primary">Добавить техпроцесс в базу</a>
+                <a href="{% url 'data' %}" class="btn btn-secondary">Просмотреть данные</a>
             </div>
-        </div>
+        {% else %}
+            <div class="alert alert-info">
+                Пожалуйста, <a href="{% url 'login' %}">войдите</a> в систему для доступа к архиву.
+            </div>
+        {% endif %}
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

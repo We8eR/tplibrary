@@ -1,36 +1,29 @@
-<!-- templates/tplibrary/data.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AddTP List</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <div class="container">
-        <h1>AddTP List</h1>
-        <table>
-            <thead>
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Список техпроцессов</h2>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-light">
+            <tr class="text-dark">
+                <th class="text-dark">Цех</th>
+                <th class="text-dark">Автор</th>
+                <th class="text-dark">Название</th>
+                <th class="text-dark">Описание</th>
+                <th class="text-dark">Дата и время</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in addtps %}
                 <tr>
-                    <th>Author</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Date and Time</th>
+                    <td>{{ item.workshop }}</td>
+                    <td>{{ item.author }}</td>
+                    <td>{{ item.title }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.date_time }}</td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for item in addtps %}
-                    <tr>
-                        <td>{{ item.author }}</td>
-                        <td>{{ item.title }}</td>
-                        <td>{{ item.description }}</td>
-                        <td>{{ item.date_time }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

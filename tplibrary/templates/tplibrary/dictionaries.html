@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Управление справочниками</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <!-- Должности -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Должности</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'add_role' %}" class="mb-4">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            {{ role_form.name }}
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                        </div>
+                    </form>
+                    
+                    <div class="list-group">
+                        {% for role in roles %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ role.name }}
+                                <a href="{% url 'delete_role' role.id %}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Вы уверены, что хотите удалить эту должность?')">
+                                    Удалить
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Цеха -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Цеха</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'add_workshop' %}" class="mb-4">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            {{ workshop_form.number }}
+                            <button type="submit" class="btn btn-primary">Добавить</button>
+                        </div>
+                    </form>
+                    
+                    <div class="list-group">
+                        {% for workshop in workshops %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                Цех {{ workshop.number }}
+                                <a href="{% url 'delete_workshop' workshop.id %}" class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Вы уверены, что хотите удалить этот цех?')">
+                                    Удалить
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

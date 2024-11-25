@@ -125,3 +125,8 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication settings
+LOGIN_REDIRECT_URL = '/'  # Перенаправление после успешного входа
+LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
+LOGIN_URL = '/login/'  # URL для страницы входа
