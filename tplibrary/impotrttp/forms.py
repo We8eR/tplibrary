@@ -16,10 +16,11 @@ class AddTPForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Введите описание техпроцесса'}),
         label='Описание'
     )
+    barcode_image = forms.ImageField(widget=forms.HiddenInput(), required=False)
 
     class Meta:
         model = AddTP
-        fields = ['author', 'title', 'description', 'workshop']
+        fields = ['author', 'title', 'description', 'workshop', 'barcode_image']
         widgets = {
             'workshop': forms.Select(attrs={'class': 'form-control'})
         }

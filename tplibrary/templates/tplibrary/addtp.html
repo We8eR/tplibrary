@@ -1,3 +1,4 @@
+<!-- templates/tplibrary/addtp.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -30,6 +31,10 @@
                             <a href="{% url 'data' %}" class="btn btn-secondary">Отмена</a>
                         </div>
                     </form>
+                    {% if addtp %}
+                        <h2>Сгенерированный штрих-код</h2>
+                        <img src="{{ addtp.barcode_image.url }}" alt="Barcode">
+                    {% endif %}
                 </div>
             </div>
         </div>

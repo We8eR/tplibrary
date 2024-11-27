@@ -44,7 +44,8 @@ class AddTP(models.Model):
     description = models.TextField(null=False, blank=False)
     workshop = models.ForeignKey(Workshop, on_delete=models.PROTECT, verbose_name='Цех')
     date = models.DateTimeField(default=timezone.now)
-
+    barcode_image = models.ImageField(upload_to='barcodes/', null=True, blank=True)
+    
     class Meta:
         ordering = ['-date']
 

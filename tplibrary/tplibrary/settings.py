@@ -130,3 +130,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'  # Перенаправление после успешного входа
 LOGOUT_REDIRECT_URL = '/'  # Перенаправление после выхода
 LOGIN_URL = '/login/'  # URL для страницы входа
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

@@ -1,12 +1,18 @@
+# impotrttp/views.py
+import barcode
+from barcode.writer import ImageWriter
+from django.core.files.base import ContentFile
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.conf import settings  # Импортируем settings
 from .models import AddTP, UserProfile, Role, Workshop
 from .forms import (
     AddTPForm, UserCreateForm, UserProfileForm,
     RoleForm, WorkshopForm
 )
+import os
 
 def is_admin(user):
     return user.is_superuser
@@ -16,8 +22,25 @@ def addtp(request):
     if request.method == 'POST':
         form = AddTPForm(request.POST)
         if form.is_valid():
-            tp = form.save()
-            return redirect('data')
+            addtp = form.save(commit=False)
+            addtp.save()  # Сохраняем объект, чтобы получить его id
+
+            # Генерация штрих-кода с использованием значения из поля title
+            barcode_image = barcode.get('code128', addtp.title, writer=ImageWriter())
+            barcode_filename = f'barcode_{addtp.id}.png'
+            barcode_path = os.path.join(settings.MEDIA_ROOT, 'barcodes', barcode_filename)
+
+            # Убедимся, что директория существует
+            os.makedirs(os.path.dirname(barcode_path), exist_ok=True)
+
+            barcode_image.save(barcode_path)
+
+            # Сохранение штрих-кода в базе данных
+            with open(barcode_path, 'rb') as f:
+                addtp.barcode_image.save(barcode_filename, ContentFile(f.read()))
+
+            addtp.save()
+            return render(request, 'tplibrary/addtp.html', {'form': AddTPForm(), 'addtp': addtp})
     else:
         form = AddTPForm()
     return render(request, 'tplibrary/addtp.html', {'form': form})
@@ -90,7 +113,7 @@ def dictionaries(request):
     workshops = Workshop.objects.all()
     role_form = RoleForm()
     workshop_form = WorkshopForm()
-    
+
     return render(request, 'tplibrary/dictionaries.html', {
         'roles': roles,
         'workshops': workshops,
