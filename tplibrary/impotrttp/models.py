@@ -1,3 +1,4 @@
+# impotrttp/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -38,6 +39,18 @@ class UserProfile(models.Model):
             full_name += f" {self.middle_name}"
         return f"{full_name} - {self.workshop}"
 
+class Item(models.Model):
+    name = models.CharField(max_length=200, verbose_name='Название изделия')
+    description = models.TextField(verbose_name='Описание изделия')
+
+    class Meta:
+        verbose_name = 'Изделие'
+        verbose_name_plural = 'Изделия'
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
 class AddTP(models.Model):
     author = models.CharField(max_length=200, null=False, blank=False)
     title = models.CharField(max_length=200, null=False, blank=False)
@@ -45,7 +58,10 @@ class AddTP(models.Model):
     workshop = models.ForeignKey(Workshop, on_delete=models.PROTECT, verbose_name='Цех')
     date = models.DateTimeField(default=timezone.now)
     barcode_image = models.ImageField(upload_to='barcodes/', null=True, blank=True)
-    
+    created_at = models.DateTimeField(auto_now_add=True)  # Поле для даты и времени создания
+    updated_at = models.DateTimeField(auto_now=True)  # Поле для даты и времени обновления
+    item = models.ForeignKey(Item, on_delete=models.PROTECT, verbose_name='Изделие')  # Поле для изделия
+
     class Meta:
         ordering = ['-date']
 

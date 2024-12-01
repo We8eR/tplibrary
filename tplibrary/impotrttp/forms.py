@@ -1,5 +1,6 @@
+# impotrttp/forms.py
 from django import forms
-from .models import AddTP, UserProfile, Role, Workshop
+from .models import AddTP, UserProfile, Role, Workshop, Item
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -16,11 +17,15 @@ class AddTPForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Введите описание техпроцесса'}),
         label='Описание'
     )
-    barcode_image = forms.ImageField(widget=forms.HiddenInput(), required=False)
+    item = forms.ModelChoiceField(
+        queryset=Item.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Изделие'
+    )
 
     class Meta:
         model = AddTP
-        fields = ['author', 'title', 'description', 'workshop', 'barcode_image']
+        fields = ['author', 'title', 'description', 'workshop', 'item']
         widgets = {
             'workshop': forms.Select(attrs={'class': 'form-control'})
         }
@@ -99,5 +104,20 @@ class WorkshopForm(forms.ModelForm):
             'number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Номер цеха'
+            })
+        }
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите название изделия'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Введите описание изделия'
             })
         }

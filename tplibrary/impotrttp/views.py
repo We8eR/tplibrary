@@ -7,10 +7,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.conf import settings  # Импортируем settings
-from .models import AddTP, UserProfile, Role, Workshop
+from .models import AddTP, UserProfile, Role, Workshop, Item
 from .forms import (
     AddTPForm, UserCreateForm, UserProfileForm,
-    RoleForm, WorkshopForm
+    RoleForm, WorkshopForm, ItemForm
 )
 import os
 
@@ -27,7 +27,7 @@ def addtp(request):
 
             # Генерация штрих-кода с использованием значения из поля title
             barcode_image = barcode.get('code128', addtp.title, writer=ImageWriter())
-            barcode_filename = f'barcode_{addtp.id}.png'
+            barcode_filename = f'barcode_{addtp.title}_{addtp.id}.png'
             barcode_path = os.path.join(settings.MEDIA_ROOT, 'barcodes', barcode_filename)
 
             # Убедимся, что директория существует
@@ -47,10 +47,11 @@ def addtp(request):
 
 @login_required
 def data(request):
+    sort_by = request.GET.get('sort_by', 'created_at')
     if request.user.is_superuser:
-        addtps = AddTP.objects.all()
+        addtps = AddTP.objects.all().order_by(sort_by)
     else:
-        addtps = AddTP.objects.filter(workshop=request.user.userprofile.workshop)
+        addtps = AddTP.objects.filter(workshop=request.user.userprofile.workshop).order_by(sort_by)
     return render(request, 'tplibrary/data.html', {'addtps': addtps})
 
 def index(request):
@@ -111,14 +112,18 @@ def delete_user(request, user_id):
 def dictionaries(request):
     roles = Role.objects.all()
     workshops = Workshop.objects.all()
+    items = Item.objects.all()
     role_form = RoleForm()
     workshop_form = WorkshopForm()
+    item_form = ItemForm()
 
     return render(request, 'tplibrary/dictionaries.html', {
         'roles': roles,
         'workshops': workshops,
+        'items': items,
         'role_form': role_form,
-        'workshop_form': workshop_form
+        'workshop_form': workshop_form,
+        'item_form': item_form
     })
 
 @user_passes_test(is_admin)
@@ -161,4 +166,39 @@ def delete_workshop(request, workshop_id):
         messages.success(request, 'Цех успешно удален')
     except:
         messages.error(request, 'Невозможно удалить цех, так как он используется')
+    return redirect('dictionaries')
+
+@user_passes_test(is_admin)
+def add_item(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Изделие успешно добавлено')
+        else:
+            messages.error(request, 'Ошибка при добавлении изделия')
+    return redirect('dictionaries')
+
+@user_passes_test(is_admin)
+def edit_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    if request.method == 'POST':
+        form = ItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Изделие успешно обновлено')
+        else:
+            messages.error(request, 'Ошибка при обновлении изделия')
+    else:
+        form = ItemForm(instance=item)
+    return render(request, 'tplibrary/edit_item.html', {'form': form, 'item': item})
+
+@user_passes_test(is_admin)
+def delete_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    try:
+        item.delete()
+        messages.success(request, 'Изделие успешно удалено')
+    except:
+        messages.error(request, 'Невозможно удалить изделие, так как оно используется')
     return redirect('dictionaries')

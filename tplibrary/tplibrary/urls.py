@@ -23,6 +23,9 @@ urlpatterns = [
     path('dictionaries/role/delete/<int:role_id>/', views.delete_role, name='delete_role'),
     path('dictionaries/workshop/add/', views.add_workshop, name='add_workshop'),
     path('dictionaries/workshop/delete/<int:workshop_id>/', views.delete_workshop, name='delete_workshop'),
+    path('dictionaries/item/add/', views.add_item, name='add_item'),
+    path('dictionaries/item/edit/<int:item_id>/', views.edit_item, name='edit_item'),
+    path('dictionaries/item/delete/<int:item_id>/', views.delete_item, name='delete_item'),
     # Аутентификация
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logged_out.html', next_page='index'), name='logout'),
